@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "DocumentPicker",
+    "slug": "DocumentPicker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourname.documentpicker",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "We need access to your photos for file selection.",
+        "NSCameraUsageDescription": "We need access to your camera for capturing photos.",
+        "NSMicrophoneUsageDescription": "We need access to your microphone for recording.",
+        "NSFileSystemUsageDescription": "We need access to your files to pick documents."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
+      "package": "com.yourname.documentpicker",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "category": [
+            "DEFAULT",
+            "BROWSABLE"
+          ],
+          "data": {
+            "scheme": "https",
+            "host": "yourdomain.com"
+          }
+        }
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
