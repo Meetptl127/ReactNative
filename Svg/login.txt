@@ -1,0 +1,108 @@
+import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoginScreen from './screens/LoginScreen';
+import HomeScreen from './screens/HomeScreen';
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      const token = await AsyncStorage.getItem('userToken');
+      setIsLoggedIn(!!token);
+    };
+    checkLogin();
+  }, []);
+
+  if (isLoggedIn === null) return null; // or splash screen
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        {isLoggedIn ? (
+          <Stack.Screen name="Home">
+            {(props) => <HomeScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
+          </Stack.Screen>
+        ) : (
+          <Stack.Screen name="Login">
+            {(props) => <LoginScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
+          </Stack.Screen>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+
+import React, { useState } from 'react';
+import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const LoginScreen = ({ setIsLoggedIn }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    if (username === 'admin' && password === '1234') {
+      await AsyncStorage.setItem('userToken', 'dummy-token');
+      setIsLoggedIn(true);
+    } else {
+      Alert.alert('Login Failed', 'Invalid credentials');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <TextInput
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Password"
+        value={password}
+        secureTextEntry
+        onChangeText={setPassword}
+        style={styles.input}
+      />
+      <Button title="Login" onPress={handleLogin} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', padding: 20 },
+  input: { borderWidth: 1, padding: 10, marginBottom: 10, borderRadius: 5 }
+});
+
+export default LoginScreen;
+
+import React from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const HomeScreen = ({ setIsLoggedIn }) => {
+  const logout = async () => {
+    await AsyncStorage.removeItem('userToken');
+    setIsLoggedIn(false);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome, you're logged in!</Text>
+      <Button title="Logout" onPress={logout} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  title: { fontSize: 24, marginBottom: 20 }
+});
+
+export default HomeScreen;
